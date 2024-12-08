@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  nav {
+    background-color: #4B5320;
+    overflow: hidden;
+    text-align: center;
+  }
+  nav a {
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+  }
+  nav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  nav a.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  .Headers{
+    text-align: center;
+    font: bold;
+  }
+  /* Add Button Styling */
+  .add_button {
+    display: inline-block;
+    background-color: #4CAF50; 
+    color: white; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border: none; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    text-align: center; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+  }
+  
+  /* Hover effect */
+  .add_button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Active effect (when clicked) */
+  .add_button:active {
+    background-color: #3e8e41; /*
+  }
+  .action-buttons {
+    display: flex;
+    gap: 10px; /* Adds space between buttons and links */
+    align-items: center; /* Aligns items vertically if they have different heights */
+}

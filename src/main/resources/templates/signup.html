@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign Up Page</title>
+    <style>
+        /* General page styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4B5320;
+            margin-bottom: 20px;
+        }
+
+        /* Signup box styling */
+        .signup-box {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        .nav-bar {
+            margin-bottom: 20px;
+        }
+
+        .nav-bar a {
+            text-decoration: none;
+            color: #4B5320;
+            margin: 0 10px;
+        }
+
+        /* Form styling */
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4B5320;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: center;
+        }
+
+        button:hover {
+            background-color: #3b421a;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Signup Box -->
+    <div class="signup-box">
+        <!-- Navigation bar with Login button -->
+        <div class="nav-bar">
+            <a th:href="@{/}">Home Page</a>
+        </div>
+
+        <!-- Centered signup page heading -->
+        <h1>Sign Up Page</h1>
+
+        <!-- Signup form -->
+        <form class="signup-form" id="signupForm" action="/api/user/signup" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Sign Up</button>
+
+            <!-- Error message -->
+            <div th:if="${errorMessage}" class="error">
+                <p th:text="${errorMessage}"></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Handle the form submission and redirect to login page
+        document.getElementById("signupForm").addEventListener("submit", async function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch(this.action, {
+                    method: "POST",
+                    body: new URLSearchParams(formData),
+                });
+
+                if (response.ok) {
+                    // Redirect to the login page on success
+                    window.location.href = "/login";
+                } else {
+                    const errorText = await response.text();
+                    alert("Signup failed: " + errorText);
+                }
+            } catch (error) {
+                alert("An error occurred: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

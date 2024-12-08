@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Meal Selection</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        /* Scrollable table container */
+        .scrollable-table {
+            max-height: 650px; 
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 20px; 
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div>
+        <nav>
+            <a th:href="@{/userhome}">User Home</a>
+            <a id="testRecipesLink" href="#">Grocery Generator</a>
+            <a th:href="@{/}">Log Out</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div>
+        <h1 class="Headers">Select Meals For:</h1>
+            <h1><span id="selected-date"></span></h1>
+
+        <!-- Scrollable Table -->
+        <div class="scrollable-table">
+            <table class="Tables">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Recipe Name</th>
+                        <th>Instructions</th>
+                        <th>Food Origin</th>
+                        <th>Food Type</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Show message if no recipes are available -->
+                    <tr th:if="${#lists.isEmpty(recipes)}">
+                        <td colspan="6">No recipes available</td>
+                    </tr>
+
+                    <!-- Iterate through recipes and display them -->
+                    <tr th:each="recipe : ${recipes}">
+                        <td th:text="${recipe.id}"></td>
+                        <td th:text="${recipe.recipeName}"></td>
+                        <td th:text="${recipe.instructions}"></td>
+                        <td th:text="${recipe.category}"></td>
+                        <td th:text="${recipe.foodType}"></td>
+                        <td>
+                            <input type="checkbox" value="" class="meal-checkbox" th:data-recipe-id="${recipe.id}" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Save Meals Button -->
+        <div>
+            <button type="button" class="done-btn" id="save-btn">Save Meals</button>
+        </div>
+    </div>
+
+    <a id="testRecipesLink" href="#" style="display:none;">test Recipes</a> 
+
+    <script>
+        const MAX_MEALS = 5;
+    
+        // Retrieve mealPlanId and selectedDate from sessionStorage
+        const mealPlanId = sessionStorage.getItem("mealPlanId");
+        const selectedDate = sessionStorage.getItem("selectedDate");
+        const saveBtn = document.getElementById("save-btn"); 
+        const testRecipesLink = document.getElementById('testRecipesLink'); 
+    
+        // Check if values are missing and redirect if necessary
+        if (!mealPlanId || !selectedDate) {
+            sessionStorage.removeItem("remainingDays"); 
+            alert("Meal Plan ID or Date is missing. Redirecting to User Home.");
+            window.location.href = "/userhome";
+        }
+    
+        // Dynamically set the href attribute for the "test Recipes" link using the mealPlanId from sessionStorage
+        if (mealPlanId) {
+            testRecipesLink.href = `/recipes/List/${mealPlanId}`;
+        } else {
+            console.error("Meal Plan ID is missing in sessionStorage.");
+        }
+    
+        // Display retrieved data
+        console.log("MealPlanID:", mealPlanId, "SelectedDate:", selectedDate);
+        document.getElementById("selected-date").textContent = selectedDate;
+    
+        saveBtn.disabled = true; // Disable button by default
+    
+        // Enforce restriction on meal selection
+        document.addEventListener("change", (event) => {
+            if (event.target.classList.contains("meal-checkbox")) {
+                const selectedMeals = document.querySelectorAll('.meal-checkbox:checked').length;
+                saveBtn.disabled = selectedMeals === 0; 
+                if (selectedMeals > MAX_MEALS) {
+                    alert(`You can only select up to ${MAX_MEALS} meals per day.`);
+                    event.target.checked = false; 
+                }
+            }
+        });
+    
+        // Save meals using Fetch API
+        saveBtn.addEventListener("click", () => {
+            const selectedRecipes = Array.from(document.querySelectorAll('.meal-checkbox:checked'))
+                .map(input => parseInt(input.getAttribute('data-recipe-id'), 10)); 
+    
+            if (selectedRecipes.length === 0) {
+                alert("Please select at least one recipe.");
+                return;
+            }
+    
+            const payload = {
+                mealPlanId: parseInt(mealPlanId, 10), 
+                date: selectedDate, 
+                recipeIds: selectedRecipes, 
+            };
+    
+            console.log("Saving Payload:", payload);
+    
+            fetch('/api/meals/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Meals saved!');
+    
+                        // Update remainingDays in sessionStorage
+                        let remainingDays = sessionStorage.getItem("remainingDays")
+                            ? JSON.parse(sessionStorage.getItem("remainingDays"))
+                            : [];
+                        console.log("Remaining Days (before update):", remainingDays);
+    
+                        // Remove current day from remainingDays
+                        const index = remainingDays.indexOf(selectedDate);
+                        if (index !== -1) {
+                            remainingDays.splice(index, 1);
+                        }
+                        console.log("Remaining Days (after update):", remainingDays);
+    
+                        // Update session storage
+                        if (remainingDays.length > 0) {
+                            sessionStorage.setItem("remainingDays", JSON.stringify(remainingDays));
+                            sessionStorage.setItem("selectedDate", remainingDays[0]); 
+                            window.location.href = `/recipes/recipe?date=${remainingDays[0]}&mealPlanId=${mealPlanId}`;
+                        } else {
+                            sessionStorage.removeItem("remainingDays");
+                            alert("All meals for the plan have been saved!");
+                            //window.location.href = "/userhome";
+                        }
+    
+                        // Check if all meals have been selected and show the testRecipesLink
+                        checkIfAllMealsSelected(remainingDays);
+                    } else {
+                        throw new Error('Failed to save meals');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error saving meals:", error);
+                    alert('An error occurred. Please try again.');
+                });
+        });
+    
+        // Function to check if all meals have been selected for the meal plan
+        function checkIfAllMealsSelected(remainingDays) {
+            if (remainingDays.length === 0) {
+                console.log("All meals have been selected. Showing the 'test Recipes' link.");
+                testRecipesLink.style.display = "inline-block";  
+            }
+        }
+    </script>
+    
+    
+</body>
+</html>

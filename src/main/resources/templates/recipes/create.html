@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Recipe</title>
+    <style>
+        /* General page styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4B5320;
+            margin-bottom: 20px;
+        }
+
+        /* Create form box styling */
+        .form-box {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        /* Label and input field styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4B5320;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #3b421a;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #4B5320;
+        }
+
+        a:hover {
+            color: #3b421a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Create Recipe Form Box -->
+    <div class="form-box">
+        <!-- Heading -->
+        <h1>Create Recipe</h1>
+
+        <!-- Form -->
+        <form action="/recipes/create" method="post" th:object="${recipeDto}">
+            <!-- Recipe Name -->
+            <div class="form-group">
+                <label for="recipeName">Recipe Name</label>
+                <input type="text" id="recipeName" th:field="*{recipeName}" required />
+            </div>
+
+            <!-- Instructions -->
+            <div class="form-group">
+                <label for="instructions">Instructions</label>
+                <input type="text" id="instructions" th:field="*{instructions}" required />
+            </div>
+
+            <!-- Image Name -->
+            <div class="form-group">
+                <label for="imageName">Image Name</label>
+                <input type="text" id="imageName" th:field="*{imageName}" required />
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select th:field="*{category}">
+                    <option value="Indian">Indian</option>
+                    <option value="Asian">Asian</option>
+                    <option value="European">European</option>
+                    <option value="American">American</option>
+                    <option value="African">African</option>
+                    <option value="Hispanic">Hispanic</option>
+                </select>
+            </div>
+
+            <!-- Food Type -->
+            <div class="form-group">
+                <label for="foodType">Food Type</label>
+                <select th:field="*{foodType}">
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch/Dinner">Lunch/Dinner</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit</button>
+
+            <!-- Cancel Link -->
+            <a href="/userhome">User Home</a>
+        </form>
+    </div>
+
+</body>
+</html>

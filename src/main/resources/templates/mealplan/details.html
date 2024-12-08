@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meal Plan Details</title>
+    <style>
+        /* General page styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Navigation bar styling */
+        .nav-bar {
+            background-color: #4B5320;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .nav-bar a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Scrollable table container */
+        .scrollable-table {
+            max-height: 700px; 
+            overflow-y: auto;
+            border: 1px solid #ccc; 
+            margin-bottom: 20px; 
+        }
+
+        /* Page content */
+        .content {
+            margin-top: 80px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4B5320;
+            margin-bottom: 20px;
+        }
+
+        /* Meal details container */
+        .meal-details-container {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            margin-top: 20px;
+        }
+
+        /* Meal detail item styling */
+        .meal-detail-item {
+            margin-bottom: 20px;
+        }
+
+        .ingredients ul {
+            padding-left: 0;
+            list-style-type: none;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr; 
+            grid-gap: 15px;
+        }
+
+        .ingredients li {
+            display: contents; 
+        }
+
+        .ingredients span {
+            padding: 5px 0;
+        }
+
+        .header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Recipe name and instructions */
+        .recipe-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .instructions {
+            font-size: 16px;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar -->
+    <div class="nav-bar">
+        <a href="/userhome">User Home</a>
+        <a href="/recipes/create">Create Recipe</a>
+        <a href="/">Log Out</a>
+    </div>
+
+    <!-- Page Content -->
+    <div class="content">
+        <h1>Meal Plan Details</h1>
+        
+        <div th:if="${#lists.isEmpty(mealDetails)}">
+            <p>No meal plan details found for current user.</p>
+        </div>
+
+        <!-- Print Button -->
+        <button onclick="printSelectedMeals()">Print Selected Meals</button><br>
+
+        <div class="scrollable-table">
+            <table class="Tables">
+
+                <!-- Meal Plan Details Container -->
+                <div class="meal-details-container" th:each="mealDetail : ${mealDetails}">
+                    <div class="meal-detail-item">
+                        <!-- Checkbox to select meal for printing -->
+                        <input type="checkbox" class="meal-checkbox" th:id="mealDetail.id" th:data-date="${mealDetail.date}" th:data-recipe="${mealDetail.recipeName}" />
+                        <label th:for="mealDetail.id">Meal on <span th:text="${mealDetail.date}"></span></label>
+                        <div class="recipe-name">
+                            <strong>Recipe:</strong> <span th:text="${mealDetail.recipeName}"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="meal-detail-item ingredients">
+                        <h5 class="header">Ingredients:</h5>
+                        <ul>
+                            <li th:each="ingredient : ${mealDetail.ingredients}">
+                                <span th:text="${ingredient.quantity}"></span> 
+                                <span th:text="${ingredient.unit}"></span> 
+                                <span th:text="${ingredient.ingredientName}"></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="meal-detail-item instructions">
+                        <h5 class="header">Instructions:</h5>
+                        <p th:text="${mealDetail.instructions}"></p>
+                    </div>
+                </div>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function printSelectedMeals() {
+            // Get all selected meal checkboxes
+            var selectedMeals = document.querySelectorAll('.meal-checkbox:checked');
+            var printContents = '';
+
+            selectedMeals.forEach(function(checkbox) {
+                var mealContainer = checkbox.closest('.meal-details-container');
+                printContents += mealContainer.innerHTML;
+            });
+
+            if (printContents === '') {
+                alert('Please select at least one meal to print.');
+                return;
+            }
+
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+</body>
+</html>
+

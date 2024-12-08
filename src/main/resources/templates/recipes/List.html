@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Grocery List</title>
+    <style>
+        /* General page styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Navigation bar styling */
+        .nav-bar {
+            background-color: #4B5320;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .nav-bar a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Page content */
+        .content {
+            margin-top: 80px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4B5320;
+            margin-bottom: 20px;
+        }
+
+        /* Grocery list container */
+        .grocery-list-container {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            margin-top: 20px;
+        }
+
+        /* Grocery list styling */
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        /* Style for each column */
+        .ingredient-name, .quantity, .unit {
+            width: 30%;
+            text-align: left;
+        }
+
+        .ingredient-name {
+            font-weight: bold;
+        }
+
+        .quantity, .unit {
+            text-align: center;
+        }
+
+        /* Header styling */
+        .header {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        /* Scrollable table container */
+        .scrollable-table {
+            max-height: 700px; /* height */
+            overflow-y: auto;
+            border: 1px solid #ccc; 
+            margin-bottom: 20px; 
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar -->
+    <div class="nav-bar">
+        <a href="/userhome">User Home </a>
+        <a href="/">Log Out</a>
+    </div>
+
+    <!-- Page Content -->
+    <div class="content">
+        <h1>Grocery List</h1>
+
+        <!-- Print Button -->
+        <button onclick="printTable()">Print Meal Plan</button><br></button>
+
+        <div class="scrollable-table">
+            <table class="Tables">
+
+                <div class="grocery-list-container">
+                    <ul>
+                        <!-- Header Row -->
+                        <li class="header">
+                            <span class="ingredient-name">Ingredient</span>
+                            <span class="quantity">Quantity</span>
+                            <span class="unit">Unit</span>
+                        </li>
+                        <!-- List Items -->
+                        <li th:each="item : ${groceryList}">
+                            <span class="ingredient-name" th:text="${item.ingredientName}">Ingredient Name</span>
+                            <span class="quantity" th:text="${item.quantity}">Quantity</span>
+                            <span class="unit" th:text="${item.unit}">Unit</span>
+                        </li>
+                    </ul>
+                </div>
+            </table>      
+        </div>
+    </div>
+
+    <script>
+        function printTable() {
+            var printContents = document.querySelector('.scrollable-table').innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            // Replace the body content with the content of the table for printing
+            document.body.innerHTML = printContents;
+
+            // Trigger the print dialog
+            window.print();
+
+            // Restore the original page content after printing
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    
+</body>
+</html>
