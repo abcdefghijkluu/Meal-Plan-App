@@ -159,7 +159,6 @@
             <a href="/recipes/create">Create the Recipes</a>
             <a href="/recipes/Allrecipes">All the Recipes</a>
             <a id="mealPlansLink" href="#">Previous Meal Plans</a>
-            <a id="testRecipesLink" href="#">Grocery List</a>
         </div>
     </div>
 
@@ -343,7 +342,8 @@
         
         const rows = plannerTable.querySelectorAll("tr");
         const remainingDays = Array.from(rows).filter(
-            row => row.querySelector(".meal-btn") /
+            row => row.querySelector(".meal-btn") 
+    );
 
         console.log("Remaining Days:", remainingDays.length);
 

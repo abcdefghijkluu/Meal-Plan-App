@@ -67,9 +67,7 @@
             </tr>
             </thead>
             <tbody>
-                <tr th:if="${#lists.isEmpty(recipes)}">
-                    <td colspan="6">No recipes available</td>
-                </tr>
+               
        
                 <tr th:each="recipe : ${filtered}">
                     <td th:text="${recipe.id}"></td>

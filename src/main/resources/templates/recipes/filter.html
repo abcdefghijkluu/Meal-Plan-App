@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html>
 <head>
     <style>
         /* General Reset */
@@ -70,8 +69,13 @@
         }
 
         label {
-            display: block;
+            display: flex;
+            align-items: center;
             margin-bottom: 5px;
+        }
+
+        label input[type="checkbox"] {
+            margin-right: 10px;
         }
 
         button {
@@ -93,7 +97,7 @@
     <!-- Navigation Bar -->
     <nav>
         <a th:href="@{/userhome}">User Home</a>
-        <a th:href="@{/recipes/filtered}">Recipes Page</a>
+        <a th:href="@{/recipes/Allrecipes}">Recipes Page</a>
         <a th:href="@{/}">Log Out</a>
     </nav>
 
@@ -104,7 +108,7 @@
             <fieldset class="filter-box">
                 <legend>Origin</legend>
                 <label th:each="category : ${categories}">
-                    <input type="checkbox" name="categories" th:value="${category}" />
+                    <input type="checkbox" name="categories" th:value="${category}"/>
                     <span th:text="${category}"></span>
                 </label>
             </fieldset>
@@ -112,6 +116,10 @@
             <!-- Filter by Food Type -->
             <fieldset class="filter-box">
                 <legend>Food Type</legend>
+                <label>
+                    <input type="checkbox" name="foodTypes" value="Lunch/Dinner" />
+                    <span>Lunch/Dinner</span>
+                </label>
                 <label th:each="foodType : ${foodTypes}">
                     <input type="checkbox" name="foodTypes" th:value="${foodType}" />
                     <span th:text="${foodType}"></span>
