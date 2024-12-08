@@ -19,17 +19,21 @@ public class GroceryListController {
     @Autowired
     private GroceryListService groceryListService;
 
-
-     @GetMapping("/recipes/List/{mealPlanId}")
-     public String getGroceryList(@PathVariable Long mealPlanId, Model model) {
-         List<RecipeIngredientDTO> groceryList = groceryListService.getGroceryListForMealPlan(mealPlanId);  // Pass dynamic mealPlanId
-         model.addAttribute("groceryList", groceryList);
-         System.out.println("Received mealPlanId: " + mealPlanId);
-        return "recipes/List";
-
+    @GetMapping("/recipes/List/{mealPlanId}")
+    public String getGroceryList(@PathVariable Long mealPlanId, Model model) {
+        // Print the mealPlanId for debugging
+        System.out.println("Received mealPlanId: " + mealPlanId);
+        
+        // Fetch the grocery list based on the mealPlanId
+        List<RecipeIngredientDTO> groceryList = groceryListService.getGroceryListForMealPlan(mealPlanId);
+        
+        // Add the grocery list to the model for the view
+        model.addAttribute("groceryList", groceryList);
+        
+        // Return the "recipes/List" template
+        return "recipes/List"; // This is the page that will display the grocery list
+    }
     
- }
-
 
 
 

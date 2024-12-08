@@ -158,7 +158,8 @@
             <a href="/recipes/create">Create the Recipes</a>
             <a href="/recipes/Allrecipes">All the Recipes</a>
             <a th:href="@{/api/mealplans/details(userId=${userId})}">Previous Meal Plans</a>
-            <a th:href="@{/recipes/List/1}">Grocery List</a>
+            <a id="testRecipesLink" href="#">test Recipes</a>
+
 
         </div>
     </div>
@@ -202,7 +203,9 @@
     const saveDatesBtn = document.getElementById('save-dates-btn');
     const plannerTable = document.getElementById('planner-table');
     const noDatesRow = document.getElementById('no-dates-row');
+    const testRecipesLink = document.getElementById("testRecipesLink");
 
+    // Function to check if userId exists in sessionStorage
     function checkUserId() {
         const userId = sessionStorage.getItem("userId");
         if (!userId) {
@@ -250,7 +253,6 @@
         checkIfFinalizeNeeded(); // Check if the finalize button should appear
     }
 
-
     function selectMeals(date) {
         const userId = sessionStorage.getItem("userId");
         const mealPlanId = sessionStorage.getItem("mealPlanId");
@@ -275,7 +277,6 @@
         console.log("Redirecting to recipe selection for date:", date, "MealPlanID:", mealPlanId);
         window.location.href = `/recipes/recipe?date=${date}&mealPlanId=${mealPlanId}`;
     }
-
 
     saveDatesBtn.addEventListener('click', () => {
         const userId = sessionStorage.getItem("userId");
@@ -315,6 +316,12 @@
             if (data.mealPlanId) {
                 sessionStorage.setItem("mealPlanId", data.mealPlanId); // Store mealPlanId
                 alert('Meal plan initiated!');
+
+                // Update the testRecipes link with the new mealPlanId
+                const mealPlanId = sessionStorage.getItem("mealPlanId");
+                if (mealPlanId && testRecipesLink) {
+                    testRecipesLink.href = `/recipes/List/${mealPlanId}`;
+                }
             } else {
                 console.error("Meal Plan ID missing in response:", data);
                 alert('Failed to retrieve Meal Plan ID. Please try again.');
@@ -351,7 +358,6 @@
         }
     }
 
-
     document.getElementById("finalize-btn").addEventListener("click", () => {
         const userId = sessionStorage.getItem("userId");
         const mealPlanId = sessionStorage.getItem("mealPlanId");
@@ -379,6 +385,9 @@
         });
     });
 </script>
+
+
+
 
 </body>
 </html>
