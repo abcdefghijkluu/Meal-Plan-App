@@ -85,14 +85,14 @@ public class MealPlanController {
         return "userhome";
     }
 
-    //OEISY
+
     @GetMapping("/details")
-    public String getMealPlanDetails(HttpSession session, Model model) {
-        Integer userId = (Integer) session.getAttribute("userId");
+    public String getMealPlanDetails(@RequestParam Integer userId, Model model) {
         List<MealDetailsDTO> mealDetails = mealService.getMealPlanDetails(userId);
         model.addAttribute("mealDetails", mealDetails);
         return "mealplan/details"; // Thymeleaf view for meal plan details
     }
+
 
     /**
      * Get all Meal Plans for a specific user.
