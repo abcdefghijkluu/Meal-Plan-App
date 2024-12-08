@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>HomePage</title>
-        <link rel="stylesheet" th:href="@{/style.css}">
-    </head>
-    <body>
-        <!-- navigation bar -->
-        <nav>
-            <a th:href="@{/userhome}">Create a meal Plan</a> 
-            <a th:href="@{/recipes/recipe}">Edit Recipes</a>
-        </nav>
-    </body>
-     
+<head>
+    <title>Grocery List</title>
+</head>
+<body>
+    <div>
+        <h1>Welcome to the Meal Plan App!</h1>
+    
+            <div th:if="${mealPlanId != null}">
+                <p>Meal Plan ID: <span th:text="${mealPlanId}"></span></p>
+                <a th:href="@{/recipes/List/{mealPlanId}(mealPlanId=${mealPlanId})}">View Grocery List</a>
+            </div>
+            
+    
+</body>
 </html>
